@@ -1,6 +1,9 @@
 package com.uc;
 
-import java.util.List; 
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,17 +21,39 @@ public class Dao {
 	static Session session=sf.openSession();
 	static Transaction tx=session.beginTransaction();
 	
+	private final static Logger logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	public void dosomething() {
+		logger.setLevel(Level.SEVERE);
+		logger.severe("info message");
+		logger.warning("this is warning message");
+		logger.info("this is info message");
+		logger.finest("this is finest message");
+	
+		logger.setLevel(Level.INFO);
+		logger.severe("info message");
+		logger.warning("this is warning message");
+		logger.info("this is info message");
+		logger.finest("this is finest message");
+	}
+	
 	public static int register(bean2 bean2) {
 	int i=0;
 	i=(Integer)session.save(bean2);    
 	tx.commit();
+	
 	//session.close();
 	return i;
 	}
 	public static List retreive(bean2 bean2) {
 	Query<bean2> query=session.createQuery("from bean2");
 	List<bean2> list=query.list();
-	//session.close();
+	Dao obj=new Dao();
+	try {
+		MyLogger.setup();
+	} catch (IOException e) {
+		e.printStackTrace();
+throw new RuntimeException("Problems with creating the log files");	//session.close();
+	}obj.dosomething();
 	return list;
 	}
 	
